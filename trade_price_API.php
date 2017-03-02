@@ -3,9 +3,9 @@
     $conn = r\connect('localhost');
 
     $symbolName = $_REQUEST['name'];
-    $symbolName = "Gold";
+    $symbolName = "gold";
 
-    $result = r\db("protrade")->table("trade")->orderBy(array("index" => "id"))->filter(array("name" => $symbolName))->nth(-1)->pluck(array("price"))->run($conn);
+    $result = r\db("protrade")->table("trade")->orderBy(array("index" => "id"))->filter(array("name" => $symbolName))->nth(-1)->pluck(array("current_price"))->run($conn);
 
     $response = array();
     $response['data'] = array();
