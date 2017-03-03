@@ -3,7 +3,7 @@
     $conn = r\connect('localhost');
 
     $symbolName = $_REQUEST['name'];
-    $symbolName = "gold";
+    // $symbolName = "gold";
 
     $result = r\db("protrade")->table("trade")->orderBy(array("index" => "id"))->filter(array("name" => $symbolName))->nth(-1)->pluck(array("current_price"))->run($conn);
 
