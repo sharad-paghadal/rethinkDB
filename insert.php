@@ -15,9 +15,8 @@
 	$count = r\db("protrade")->table("trade")->count()->run($conn);
 
 	//finding timestamp
-	$ts = time();
-	$date = new DateTime("@$ts");
-	$finalTimeStamp =  $date->format('Y-m-d H:i:s');
+	date_default_timezone_set("Asia/Kolkata");
+	$finalTimeStamp = date("Y-m-d H:i:s");
 
 	$doc=array(
 		"id"=>$count+1,
