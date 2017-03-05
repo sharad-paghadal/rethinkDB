@@ -12,14 +12,15 @@
 	
 	$conn=r\connect('localhost');
 
-	$count = r\db("protrade")->table("trade")->count()->run($conn);
+	//$count = r\db("protrade")->table("trade")->count()->run($conn);
 
 	//finding timestamp
 	date_default_timezone_set("Asia/Kolkata");
 	$finalTimeStamp = date("Y-m-d H:i:s");
 
 	$doc=array(
-		"id"=>$count+1,
+		// "id"=>$count+1,
+		"id" => $symbol_code.date("YmdHis"),
 		"name"=>$symbol_code,
 		"symbol_id"=>getSymbolId($symbol_code),
 		"time_stamp" => $finalTimeStamp,
@@ -51,7 +52,8 @@
 	}
 
 	$docForCall = array(
-		"id" => $count+1,
+		//"id" => $count+1,
+		"id" => $symbol_code.date("YmdHis"),
 		"timeStamp" => $finalTimeStamp,
 		"symbol_id" => getSymbolId($symbol_code),
 		"type" => $type,

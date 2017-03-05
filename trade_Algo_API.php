@@ -8,6 +8,8 @@
     $tempTradeData = array();
     $tempTradeData['time_stamp'] = NULL;
 
+    $delete = r\db("protrade")->table('trade')->delete()->run($conn);
+
     $result = r\db("protrade")->table("rawvalue")->orderBy(array("index" => "id"))->run($conn);
     
     foreach ($result as $res) {
@@ -19,6 +21,7 @@
         }
 
         if ($firstData) {
+            $tempTradeData['id'] = $res['id'];
             $tempTradeData['open'] = $res['current_price'];
             $tempTradeData['high'] = $res['current_price'];
             $tempTradeData['low'] = $res['current_price'];
@@ -37,6 +40,8 @@
     }
 
     echo json_encode($tradeData);
+    $result = r\db("protrade")->table("trade")->insert($tradeData)->run($conn);
+    // echo "Data Inserted into Tarde table\t";
 
     // Function Area
     function compareTime($currentTimeStr, $lastTimeStr) {
