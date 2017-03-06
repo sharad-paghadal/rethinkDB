@@ -37,6 +37,15 @@
             }
             $tempTradeData['close'] = $res['current_price'];
         }
+
+        $result1 = r\db("protrade")->table("rawvalue")->orderBy(array("index" => "id"))->nth(-1)->pluck(array("id"))->run($conn);
+
+        if($res['id'] == $result1['id']){
+            $tempTradeData['flag'] = TRUE;
+            array_push($tradeData, $tempTradeData);
+            $tempTradeData = NULL;
+            $firstData = TRUE;
+        }
     }
 
     echo json_encode($tradeData);

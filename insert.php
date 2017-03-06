@@ -3,43 +3,28 @@
 	require_once("rdb/rdb.php");
 
 	$symbol_code = $_REQUEST["code"];
-	$timeStamp = $_REQUEST["timeStamp"];
 	$currentPrice = $_REQUEST["currentPrice"];
-	$openPrice = $_REQUEST["openPrice"];
-	$highPrice = $_REQUEST["highPrice"];
-	$lowPrice = $_REQUEST["lowPrice"];
-	$closePrice = $_REQUEST["closePrice"];
 	
 	$conn=r\connect('localhost');
 
-	//$count = r\db("protrade")->table("trade")->count()->run($conn);
-
 	//finding timestamp
 	date_default_timezone_set("Asia/Kolkata");
-	$finalTimeStamp = date("Y-m-d H:i:s");
 
-	$doc=array(
-		// "id"=>$count+1,
-		"id" => $symbol_code.date("YmdHis"),
-		"name"=>$symbol_code,
-		"symbol_id"=>getSymbolId($symbol_code),
-		"time_stamp" => $finalTimeStamp,
+	$docForRawValue = array(
+		"id" => getSymbolId($symbol_code).date("YmdHis"),
+		"code" => $symbol_code,
+		"symbol_id" => getSymbolId($symbol_code),
 		"current_price" => $currentPrice,
-		"open_price" => $openPrice,
-		"high_price" => $highPrice,
-		"low_price" => $lowPrice,
-		"close_price" => $closePrice
-	);
+		"time_stamp" => date("Y-m-d H:i:s")
+		);
 
-	if($doc["symbol_id"] == ""){
+	if($docForRawValue["symbol_id"] == ""){
 		// echo "Symbol Id not found in mysql database";
 		exit();
 	}
 
-	$result = r\db("protrade")->table("trade")->insert($doc)->run($conn);
-	echo "Data Inserted into trade table\n";
-	// print_r($result);
-	$count = r\db("protrade")->table("call")->count()->run($conn);
+	$result = r\db("protrade")->table("rawvalue")->insert($docForRawValue)->run($conn);
+	echo "Data Inserted into rawvalue table\n";
 
 	//finding type - BUY OR SELL
 	$type = "";
@@ -52,9 +37,8 @@
 	}
 
 	$docForCall = array(
-		//"id" => $count+1,
 		"id" => $symbol_code.date("YmdHis"),
-		"timeStamp" => $finalTimeStamp,
+		"timeStamp" => date("Y-m-d H:i:s"),
 		"symbol_id" => getSymbolId($symbol_code),
 		"type" => $type,
 		"rate" => $currentPrice
@@ -66,7 +50,7 @@
 	}
 
 	$result = r\db("protrade")->table("call")->insert($docForCall)->run($conn);
-	echo "Data Inserted into Call table\t";
+	//echo "Data Inserted into Call table\t";
 
     // Functions
     function getSymbolId($symbol_code){

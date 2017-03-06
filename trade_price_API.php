@@ -2,9 +2,9 @@
     require_once("rdb/rdb.php");
     $conn = r\connect('localhost');
 
-    $symbolName = $_REQUEST['name'];
+    $symbolCode = $_REQUEST['name'];
 
-    $result = r\db("protrade")->table("trade")->orderBy(array("index" => "id"))->filter(array("name" => $symbolName))->nth(-1)->pluck(array("current_price"))->run($conn);
+    $result = r\db("protrade")->table("trade")->orderBy(array("index" => "id"))->filter(array("code" => $symbolCode))->nth(-1)->pluck(array("current_price"))->run($conn);
 
     $response = array();
     $response['data'] = array();
@@ -21,6 +21,5 @@
         $response['status'] = "FAIL";
         $response['message'] = "Some Error";
     }
-
     echo json_encode($response);
 ?>
