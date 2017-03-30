@@ -1,18 +1,6 @@
 <?php
-	//require_once("rdb/rdb.php");
-    //$conn = r\connect('localhost');
 
     $totalTable = r\db("trade_cycle")->tableList()->run($conn);
-
-    //delete it after proper working code
-    // date_default_timezone_set("Asia/Kolkata");
-    // $docForRawValue = array(
-    //     "id" => "9".date("YmdHis"),
-    //     "code" => "gold",
-    //     "symbol_id" => 9,
-    //     "current_price" => 1000,
-    //     "time_stamp" => date("Y-m-d H:i:s")
-    // );
 
     foreach ($totalTable as $table) {
         $cycleLimit = substr($table, 6);

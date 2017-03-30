@@ -2,45 +2,53 @@
     require_once("rdb/rdb.php");
     $conn = r\connect('localhost');
 
+    //setup table
+    $tableName = "cycle_".$_REQUEST["cycle"];
+    $tableCreate = r\db('trade_cycle')->tableCreate($tableName)->run($conn);
+    echo "Table Created...";
+
+
+
     $firstData = TRUE;
 
     $tradeData = array();
     $tempTradeData = array();
     $tempTradeData['time_stamp'] = NULL;
 
-    $delete = r\db("protrade")->table('trade')->delete()->run($conn);
+    //$delete = r\db("protrade")->table('trade')->delete()->run($conn);
 
-    $result = r\db("protrade")->table("rawvalue")->orderBy(array("index" => "id"))->run($conn);
+    $documents = r\db("protrade")->table("rawvalue")->orderBy(array("index" => "id"))->run($conn);
     
-    foreach ($result as $res) {
+    foreach ($documents as $document) {
 
-        if(compareTime($res['time_stamp'], $tempTradeData['time_stamp']) > 5){
+        if(compareTime($document['time_stamp'], $tempTradeData['time_stamp']) > substr($tableName, 6)){
+            echo "here";
             array_push($tradeData, $tempTradeData);
             $tempTradeData = NULL;
             $firstData = TRUE;
         }
 
         if ($firstData) {
-            $tempTradeData['id'] = $res['id'];
-            $tempTradeData['open'] = $res['current_price'];
-            $tempTradeData['high'] = $res['current_price'];
-            $tempTradeData['low'] = $res['current_price'];
-            $tempTradeData['close'] = $res['current_price'];
-            $tempTradeData['time_stamp'] = $res['time_stamp'];
+            $tempTradeData['id'] = $document['id'];
+            $tempTradeData['open'] = $document['current_price'];
+            $tempTradeData['high'] = $document['current_price'];
+            $tempTradeData['low'] = $document['current_price'];
+            $tempTradeData['close'] = $document['current_price'];
+            $tempTradeData['time_stamp'] = $document['time_stamp'];
             $firstData = FALSE;
         }else{
-            if($tempTradeData['high'] < $res['current_price']){
-                $tempTradeData['high'] = $res['current_price'];
+            if($tempTradeData['high'] < $document['current_price']){
+                $tempTradeData['high'] = $document['current_price'];
             }
-            if($tempTradeData['low'] > $res['current_price']){
-                $tempTradeData['low'] = $res['current_price'];
+            if($tempTradeData['low'] > $document['current_price']){
+                $tempTradeData['low'] = $document['current_price'];
             }
-            $tempTradeData['close'] = $res['current_price'];
+            $tempTradeData['close'] = $document['current_price'];
         }
 
-        $result1 = r\db("protrade")->table("rawvalue")->orderBy(array("index" => "id"))->nth(-1)->pluck(array("id"))->run($conn);
+        $checkDoc = r\db("protrade")->table("rawvalue")->orderBy(array("index" => "id"))->nth(-1)->pluck(array("id"))->run($conn);
 
-        if($res['id'] == $result1['id']){
+        if($document['id'] == $checkDoc['id']){
             $tempTradeData['flag'] = TRUE;
             array_push($tradeData, $tempTradeData);
             $tempTradeData = NULL;
@@ -49,8 +57,8 @@
     }
 
     echo json_encode($tradeData);
-    $result = r\db("protrade")->table("trade")->insert($tradeData)->run($conn);
-    $result = r\db("trade_cycle")->table("cycle_5")->insert($tradeData)->run($conn);
+    //$result = r\db("protrade")->table("trade")->insert($tradeData)->run($conn);
+    $insertIntoTableQuery = r\db("trade_cycle")->table($tableName)->insert($tradeData)->run($conn);
     // echo "Data Inserted into Tarde table\t";
 
     // Function Area
