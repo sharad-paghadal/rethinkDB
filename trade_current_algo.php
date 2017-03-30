@@ -1,18 +1,18 @@
 <?php
-	require_once("rdb/rdb.php");
-    $conn = r\connect('localhost');
+	//require_once("rdb/rdb.php");
+    //$conn = r\connect('localhost');
 
     $totalTable = r\db("trade_cycle")->tableList()->run($conn);
 
     //delete it after proper working code
-    date_default_timezone_set("Asia/Kolkata");
-    $docForRawValue = array(
-        "id" => "9".date("YmdHis"),
-        "code" => "gold",
-        "symbol_id" => 9,
-        "current_price" => 1000,
-        "time_stamp" => date("Y-m-d H:i:s")
-    );
+    // date_default_timezone_set("Asia/Kolkata");
+    // $docForRawValue = array(
+    //     "id" => "9".date("YmdHis"),
+    //     "code" => "gold",
+    //     "symbol_id" => 9,
+    //     "current_price" => 1000,
+    //     "time_stamp" => date("Y-m-d H:i:s")
+    // );
 
     foreach ($totalTable as $table) {
         $cycleLimit = substr($table, 6);
@@ -33,7 +33,7 @@
 
         $incompleteCycleData = r\db("trade_cycle")->table($table)->orderBy(array("index" => "id"))->nth(-1)->run($conn);
         if($incompleteCycleData["flag"]){
-            if($docForRawValue["time_stamp"] - $incompleteCycleData["time_stamp"] <= $cycleLimit){
+            if(compareTime($docForRawValue["time_stamp"],$incompleteCycleData["time_stamp"]) <= $cycleLimit){
                 //for update
                 if($docForRawValue["current_price"] >= $incompleteCycleData["high"]){
                     r\db("trade_cycle")->table($table)->get($incompleteCycleData["id"])->update(array('high' => $docForRawValue["current_price"]))->run($conn);
@@ -44,7 +44,7 @@
                 r\db("trade_cycle")->table($table)->get($incompleteCycleData["id"])->update(array('close' => $docForRawValue["current_price"]))->run($conn);
             }else{
                 //update to make flag false in $incompleteCycleData
-                $updateQuery = r\db("trade_cycle")->table($table)->get($id)->replace(array
+                $updateQuery = r\db("trade_cycle")->table($table)->get($incompleteCycleData["id"])->replace(array
                     (
                         'id' => $incompleteCycleData["id"],
                         'open' => $incompleteCycleData["open"],
@@ -81,5 +81,20 @@
             );
             $insertNewData = r\db("trade_cycle")->table($table)->insert($newData)->run($conn);
         }
+    }
+    // Function Area
+    function compareTime($currentTimeStr, $lastTimeStr) {
+        date_default_timezone_set("Asia/Kolkata");
+
+        if($lastTimeStr == NULL){
+            return -1;
+        }
+
+        $currentTime = new DateTime($currentTimeStr);
+        $lastTime = new DateTime($lastTimeStr);
+
+        $timeDiff  = $lastTime->diff($currentTime);
+        return $timeDiff->i; 
+
     }
 ?>

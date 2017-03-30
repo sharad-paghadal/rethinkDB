@@ -25,6 +25,7 @@
 
 	$result = r\db("protrade")->table("rawvalue")->insert($docForRawValue)->run($conn);
 	echo "Data Inserted into rawvalue table\n";
+	include 'trade_current_algo.php';
 
 	//finding type - BUY OR SELL
 	$type = "";
@@ -51,6 +52,8 @@
 
 	$result = r\db("protrade")->table("call")->insert($docForCall)->run($conn);
 	//echo "Data Inserted into Call table\t";
+
+
 
     // Functions
     function getSymbolId($symbol_code){

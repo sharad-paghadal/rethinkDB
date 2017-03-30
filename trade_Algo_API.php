@@ -50,6 +50,7 @@
 
     echo json_encode($tradeData);
     $result = r\db("protrade")->table("trade")->insert($tradeData)->run($conn);
+    $result = r\db("trade_cycle")->table("cycle_5")->insert($tradeData)->run($conn);
     // echo "Data Inserted into Tarde table\t";
 
     // Function Area
