@@ -62,7 +62,7 @@
 		if (mysqli_connect_errno()) {
 			die("Connection Failed : ".mysqli_connect_error());
 		}
-		$sql = "SELECT  `id` FROM `symbol` WHERE `name` = '$symbol_code' ";
+		$sql = "SELECT  `id` FROM `symbol` WHERE `code` = '$symbol_code' ";
 		$result = mysqli_query($connn, $sql);
 		if ($result->num_rows == 0) {
 			echo "0 results";
