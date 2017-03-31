@@ -13,4 +13,6 @@
     $response['status'] = "SUCCESS";
     $response['data'] = $result;
     echo json_encode($response);
+
+    $conn->close();
 ?>

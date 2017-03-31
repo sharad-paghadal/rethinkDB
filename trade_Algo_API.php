@@ -5,6 +5,7 @@
     //setup table
     $tableName = "cycle_".$_REQUEST["cycle"];
     if (strlen($tableName) < 7) {
+        $conn->close();
         exit();
     }
     $tableCreate = r\db('trade_cycle')->tableCreate($tableName)->run($conn);
@@ -57,6 +58,8 @@
 
     echo json_encode($tradeData);
     $insertIntoTableQuery = r\db("trade_cycle")->table($tableName)->insert($tradeData)->run($conn);
+
+    $conn->close();
 
     // Function Area
     function compareTime($currentTimeStr, $lastTimeStr) {

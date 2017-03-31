@@ -20,6 +20,7 @@
 
 	if($docForRawValue["symbol_id"] == ""){
 		// echo "Symbol Id not found in mysql database";
+		$conn->close();
 		exit();
 	}
 
@@ -35,6 +36,7 @@
 	}elseif ($currentPrice > 3000) {
 		$type = "SELL";
 	}else{
+		$conn->close();
 		exit();
 	}
 
@@ -48,11 +50,14 @@
 
 	if($docForCall["symbol_id"] == ""){
 		// echo "Symbol Id not found in mysql database";
+		$conn->close();
 		exit();
 	}
 
 	$insertIntoCallQuery = r\db("protrade")->table("call")->insert($docForCall)->run($conn);
 	echo "Data Inserted into Call table\t";
+
+	$conn->close();
 
     // Functions
     function getSymbolId($symbol_code){
@@ -68,6 +73,7 @@
 		$result = mysqli_query($connn, $sql);
 		if ($result->num_rows == 0) {
 			echo "0 results";
+			$conn->close();
 		    exit();
 		}
 		$symbol_id = "";

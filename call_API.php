@@ -11,10 +11,6 @@
     $response['status'] = "SUCCESS";
     $response['data'] = $result;
 
-    if($response['status'] != "SUCCESS"){
-        $response['status'] = "FAIL";
-        $response['message'] = "Some Error";
-    }
-
     echo json_encode($response);
+    $con->close();
 ?>
