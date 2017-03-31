@@ -4,18 +4,17 @@
 
     //setup table
     $tableName = "cycle_".$_REQUEST["cycle"];
+    if (strlen($tableName) < 7) {
+        exit();
+    }
     $tableCreate = r\db('trade_cycle')->tableCreate($tableName)->run($conn);
     echo "Table Created...";
-
-
 
     $firstData = TRUE;
 
     $tradeData = array();
     $tempTradeData = array();
     $tempTradeData['time_stamp'] = NULL;
-
-    //$delete = r\db("protrade")->table('trade')->delete()->run($conn);
 
     $documents = r\db("protrade")->table("rawvalue")->orderBy(array("index" => "id"))->run($conn);
     
@@ -57,9 +56,7 @@
     }
 
     echo json_encode($tradeData);
-    //$result = r\db("protrade")->table("trade")->insert($tradeData)->run($conn);
     $insertIntoTableQuery = r\db("trade_cycle")->table($tableName)->insert($tradeData)->run($conn);
-    // echo "Data Inserted into Tarde table\t";
 
     // Function Area
     function compareTime($currentTimeStr, $lastTimeStr) {

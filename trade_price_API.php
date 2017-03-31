@@ -10,16 +10,7 @@
     $response['data'] = array();
     $response['status'] = "";
 
-
     $response['status'] = "SUCCESS";
     $response['data'] = $result;
-    // echo json_encode($doc);
-
-    //access each element
-    // echo $doc["name"];
-    if($response['status'] != "SUCCESS"){
-        $response['status'] = "FAIL";
-        $response['message'] = "Some Error";
-    }
     echo json_encode($response);
 ?>

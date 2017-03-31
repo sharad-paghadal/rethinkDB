@@ -1,7 +1,7 @@
 <?php
 
 	require_once("rdb/rdb.php");
-    $conn = r\connect('172.16.1.116');
+    $conn = r\connect('localhost');
 
 	$request = $_REQUEST["req"];
 
@@ -16,11 +16,6 @@
 	    $response['status'] = "SUCCESS";
 	    $response['data'] = $result;
 
-	    if($response['status'] != "SUCCESS"){
-	        $response['status'] = "FAIL";
-	        $response['message'] = "Some Error";
-	    }
-
 	    echo json_encode($response);
 
 	}else if($request == "call"){
@@ -32,11 +27,6 @@
 
 	    $response['status'] = "SUCCESS";
 	    $response['data'] = $result;
-
-	    if($response['status'] != "SUCCESS"){
-	        $response['status'] = "FAIL";
-	        $response['message'] = "Some Error";
-	    }
 
 	    echo json_encode($response);
 	}else if($request == "trade_all"){
@@ -54,11 +44,6 @@
 	    foreach ($result as $doc) {
 	    	array_push($response['data'], $doc);
     	}
-
-	    if($response['status'] != "SUCCESS"){
-	        $response['status'] = "FAIL";
-	        $response['message'] = "Some Error";
-	    }
 
 	    echo json_encode($response);
 	}
