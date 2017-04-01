@@ -1,11 +1,12 @@
 <!-- insert into rethink while changing the value of symbol, as well as check for insert into cell table... -->
 <?php
 	require_once("rdb/rdb.php");
+	require_once("constants.php");
 
 	$symbol_code = $_REQUEST["code"];
 	$currentPrice = $_REQUEST["currentPrice"];
 	
-	$conn=r\connect('localhost');
+	$conn=r\connect(DB_HOST);
 
 	//finding timestamp
 	date_default_timezone_set("Asia/Kolkata");
@@ -31,9 +32,10 @@
 
 	//finding type - BUY OR SELL
 	$type = "";
-	if($currentPrice < 2000){
+	$call = getMinMax($symbol_code);
+	if($currentPrice < $call['call_min']){
 		$type = "BUY";
-	}elseif ($currentPrice > 3000) {
+	}elseif ($currentPrice > $call['call_min']) {
 		$type = "SELL";
 	}else{
 		$conn->close();
@@ -61,11 +63,7 @@
 
     // Functions
     function getSymbolId($symbol_code){
-		$server = "localhost";
-		$user = "root";
-		$pass = "";
-		$dbName = "protrade";
-		$connn = mysqli_connect($server,$user,$pass,$dbName);
+		$connn = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
 		if (mysqli_connect_errno()) {
 			die("Connection Failed : ".mysqli_connect_error());
 		}
@@ -74,16 +72,30 @@
 		if ($result->num_rows == 0) {
 			echo "0 results";
 			$conn->close();
+			mysqli_close($connn);
 		    exit();
 		}
 		$symbol_id = "";
-
 		while ($row = mysqli_fetch_assoc($result)) {
 			$symbol_id = $row;
 		}
-
 		mysqli_close($connn);
-
 		return $symbol_id['id'];
+	}
+
+	function getMinMax($symbol_code){
+		$connn = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
+		if (mysqli_connect_errno()) {
+			die("Connection Failed : ".mysqli_connect_error());
+		}
+		$sql = "SELECT  `call_min`,`call_max` FROM `symbol` WHERE `code` = '$symbol_code' ";
+		$result = mysqli_query($connn, $sql);
+		if ($result->num_rows == 0) {
+			echo "0 results";
+			$conn->close();
+			mysqli_close($connn);
+		    exit();
+		}
+		return mysqli_fetch_assoc($result);
 	}
 ?>
