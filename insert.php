@@ -11,19 +11,21 @@
 	//finding timestamp
 	date_default_timezone_set("Asia/Kolkata");
 
-	$docForRawValue = array(
-		"id" => getSymbolId($symbol_code).date("YmdHis"),
-		"code" => $symbol_code,
-		"symbol_id" => getSymbolId($symbol_code),
-		"current_price" => $currentPrice,
-		"time_stamp" => date("Y-m-d H:i:s")
-		);
+	$symbol_id = getSymbolId($symbol_code);
 
-	if($docForRawValue["symbol_id"] == ""){
+	if($symbol_id == ""){
 		// echo "Symbol Id not found in mysql database";
 		$conn->close();
 		exit();
 	}
+
+	$docForRawValue = array(
+		"id" => $symbol_id.date("YmdHis"),
+		"code" => $symbol_code,
+		"symbol_id" => $symbol_id,
+		"current_price" => $currentPrice,
+		"time_stamp" => date("Y-m-d H:i:s")
+		);
 
 	$insertIntoRawValueQuery = r\db("protrade")->table("rawvalue")->insert($docForRawValue)->run($conn);
 	echo "Data Inserted into rawvalue table\n";
@@ -35,7 +37,7 @@
 	$call = getMinMax($symbol_code);
 	if($currentPrice < $call['call_min']){
 		$type = "BUY";
-	}elseif ($currentPrice > $call['call_min']) {
+	}elseif ($currentPrice > $call['call_max']) {
 		$type = "SELL";
 	}else{
 		$conn->close();
@@ -45,7 +47,7 @@
 	$docForCall = array(
 		"id" => $symbol_code.date("YmdHis"),
 		"timeStamp" => date("Y-m-d H:i:s"),
-		"symbol_id" => getSymbolId($symbol_code),
+		"symbol_id" => $symbol_id,
 		"type" => $type,
 		"rate" => $currentPrice
 		);

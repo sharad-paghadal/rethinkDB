@@ -3,7 +3,8 @@
 //URL : url?code=value
 
     require_once("rdb/rdb.php");
-    $conn = r\connect('localhost');
+    require_once("constants.php");
+    $conn = r\connect(DB_HOST);
 
     $symbolCode = $_REQUEST['code'];
 

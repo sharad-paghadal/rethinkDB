@@ -19,7 +19,7 @@
         //     make new object and push it to rethinkdb --> with flag true
         // }
 
-        $incompleteCycleData = r\db("trade_cycle")->table($table)->orderBy(array("index" => "id"))->nth(-1)->run($conn);
+        $incompleteCycleData = r\db("trade_cycle")->table($table)->orderBy(array("index" => "id"))->filter(array("code" => $symbol_code))->nth(-1)->run($conn);
         if($incompleteCycleData["flag"]){
             if(compareTime($docForRawValue["time_stamp"],$incompleteCycleData["time_stamp"]) <= $cycleLimit){
                 //for update
@@ -52,6 +52,7 @@
                     'low' => $docForRawValue["current_price"],
                     'close' => $docForRawValue["current_price"],
                     'time_stamp' => $docForRawValue["time_stamp"],
+                    'code' => $docForRawValue['code'],
                     'flag' => true
                 );
                 $insertNewData = r\db("trade_cycle")->table($table)->insert($newData)->run($conn);
@@ -65,6 +66,7 @@
                 'low' => $docForRawValue["current_price"],
                 'close' => $docForRawValue["current_price"],
                 'time_stamp' => $docForRawValue["time_stamp"],
+                'code' => $docForRawValue['code'],
                 'flag' => true
             );
             $insertNewData = r\db("trade_cycle")->table($table)->insert($newData)->run($conn);
