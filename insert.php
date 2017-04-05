@@ -28,7 +28,7 @@
 		);
 
 	$insertIntoRawValueQuery = r\db("protrade")->table("rawvalue")->insert($docForRawValue)->run($conn);
-	echo "Data Inserted into rawvalue table\n";
+	echo "Data Inserted into rawvalue table <br>";
 
 	include 'trade_current_algo.php';
 
@@ -45,6 +45,7 @@
 	}
 
 	$docForCall = array(
+		"code" => $symbol_code,
 		"id" => $symbol_code.date("YmdHis"),
 		"timeStamp" => date("Y-m-d H:i:s"),
 		"symbol_id" => $symbol_id,
@@ -59,7 +60,7 @@
 	}
 
 	$insertIntoCallQuery = r\db("protrade")->table("call")->insert($docForCall)->run($conn);
-	echo "Data Inserted into Call table\t";
+	echo "Data Inserted into Call table";
 
 	$conn->close();
 
