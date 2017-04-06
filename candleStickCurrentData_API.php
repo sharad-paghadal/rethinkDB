@@ -7,7 +7,7 @@
     $conn = r\connect(DB_HOST);
 
     $symbolCode = $_REQUEST['code'];
-    $tableName = "cycle_".$REQUEST['cycle'];
+    $tableName = "cycle_".$_REQUEST['cycle'];
 
     $result = r\db("trade_cycle")->table($tableName)->orderBy(array("index" => "id"))->filter(array("code" => $symbolCode))->nth(-1)->run($conn);
 
@@ -17,7 +17,7 @@
 
     $response['status'] = "SUCCESS";
     $response['data'] = $result;
-    echo json_encode($response);
+    echo json_encode($response['data']);
 
     $conn->close();
 ?>
