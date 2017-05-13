@@ -32,73 +32,29 @@
 
 	include 'trade_current_algo.php';
 
-	//finding type - BUY OR SELL
-	$type = "";
-	$call = getMinMax($symbol_code);
-	if($currentPrice < $call['call_min']){
-		$type = "BUY";
-	}elseif ($currentPrice > $call['call_max']) {
-		$type = "SELL";
-	}else{
-		$conn->close();
-		exit();
-	}
-
-	$docForCall = array(
-		"code" => $symbol_code,
-		"id" => $symbol_code.date("YmdHis"),
-		"timeStamp" => date("Y-m-d H:i:s"),
-		"symbol_id" => $symbol_id,
-		"type" => $type,
-		"rate" => $currentPrice
-		);
-
-	if($docForCall["symbol_id"] == ""){
-		// echo "Symbol Id not found in mysql database";
-		$conn->close();
-		exit();
-	}
-
-	$insertIntoCallQuery = r\db("protrade")->table("call")->insert($docForCall)->run($conn);
-	echo "Data Inserted into Call table";
+	include 'insertIntoCall.php';
 
 	$conn->close();
 
     // Functions
     function getSymbolId($symbol_code){
-		$connn = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
+		$mySqlConnection = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
 		if (mysqli_connect_errno()) {
 			die("Connection Failed : ".mysqli_connect_error());
 		}
-		$sql = "SELECT  `id` FROM `symbol` WHERE `code` = '$symbol_code' ";
-		$result = mysqli_query($connn, $sql);
+		$sql = "SELECT `id` FROM `symbol` WHERE `code` = '$symbol_code' ";
+		$result = mysqli_query($mySqlConnection, $sql);
 		if ($result->num_rows == 0) {
 			echo "0 results";
 			$conn->close();
-			mysqli_close($connn);
-		    exit();
+			mysqli_close($mySqlConnection);
+			exit();
 		}
 		$symbol_id = "";
 		while ($row = mysqli_fetch_assoc($result)) {
 			$symbol_id = $row;
 		}
-		mysqli_close($connn);
+		mysqli_close($mySqlConnection);
 		return $symbol_id['id'];
-	}
-
-	function getMinMax($symbol_code){
-		$connn = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
-		if (mysqli_connect_errno()) {
-			die("Connection Failed : ".mysqli_connect_error());
-		}
-		$sql = "SELECT  `call_min`,`call_max` FROM `symbol` WHERE `code` = '$symbol_code' ";
-		$result = mysqli_query($connn, $sql);
-		if ($result->num_rows == 0) {
-			echo "0 results";
-			$conn->close();
-			mysqli_close($connn);
-		    exit();
-		}
-		return mysqli_fetch_assoc($result);
 	}
 ?>
