@@ -10,7 +10,7 @@
         exit();
     }
     $tableCreate = r\db('trade_cycle')->tableCreate($tableName)->run($conn);
-    echo "Table Created...";
+    echo "Cycle Added";
 
     $firstData = TRUE;
 
@@ -64,7 +64,7 @@
         }
     }
 
-    echo json_encode($tradeData);
+    // echo json_encode($tradeData);
     $insertIntoTableQuery = r\db("trade_cycle")->table($tableName)->insert($tradeData)->run($conn);
 
     $conn->close();
