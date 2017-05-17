@@ -21,7 +21,7 @@
     	$low = (float) $doc['low'];
     	$close = (float) $doc['close'];
 
-    	array_push($tempData, $time);
+    	array_push($tempData, $time*1000);
     	array_push($tempData, $open);
     	array_push($tempData, $high);
     	array_push($tempData, $low);
