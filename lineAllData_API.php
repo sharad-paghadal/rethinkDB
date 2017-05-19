@@ -16,7 +16,7 @@
     	$tempData = array();
     	$time = strtotime($doc['time_stamp']);
     	$price = (float) $doc['current_price'];
-    	array_push($tempData, ($time*1000));
+    	array_push($tempData, ($time+7200)*1000);
     	array_push($tempData, $price);
     	
     	array_push($response, $tempData);
