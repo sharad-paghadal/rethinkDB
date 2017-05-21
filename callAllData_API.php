@@ -6,7 +6,7 @@
     require_once("constants.php");
     $conn = r\connect(DB_HOST);
 
-    $result = r\db("protrade")->table("call")->orderBy(array("index" => "id"))->pluck(array("code","type","rate"))->run($conn);
+    $result = r\db("protrade")->table("call")->pluck(array("code","type","rate"))->run($conn);
 
     $response = array();
 
