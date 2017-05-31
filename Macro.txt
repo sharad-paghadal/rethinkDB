@@ -1,0 +1,40 @@
+Private Sub Worksheet_Change(ByVal Target As Range)
+    
+    If Not Application.Intersect(Range("B2:B24"), Range(Target.Address)) Is Nothing Then
+
+        
+        Dim code As String
+        Dim currentPrice As String
+        Dim openPrice As String
+        Dim lowPrice As String
+        Dim highPrice As String
+        Dim closePrice As String
+        Dim timeStamp As String
+        
+        code = Range("A" & (Target.Row)).Value
+        currentPrice = Range("C" & (Target.Row)).Value
+        
+        'MsgBox "Name :" & (ActiveCell.value) & "value :" & Target.value
+        Call insert(code, currentPrice)
+    End If
+End Sub
+Sub insert(code As String, currentPrice As String)
+
+    'for rethinkdb entry
+    
+    Dim URL As String
+    URL = "http://127.0.0.1/rethinkDB/insert.php?code=" & code & "&currentPrice=" & currentPrice
+    Dim xml As Object
+    Set xml = CreateObject("MSXML2.XMLHTTP")
+    xml.Open "GET", URL, False
+    xml.Send
+
+    'using browser window data entry into rethinkdb
+    
+    'Set IE = CreateObject("InternetExplorer.Application")
+    'Dim x As String
+    'x = "http://127.0.0.1/rethinkDB/insert.php?code=" & code & "&timeStamp=" & timeStamp & "&currentPrice=" & currentPrice & "&openPrice=" & openPrice & "&highPrice=" & highPrice & "&lowPrice=" & lowPrice & "&closePrice=" & closePrice
+    'IE.Navigate (x) 'navigate
+    'IE.Visible = True ' make the site visible
+
+End Sub
